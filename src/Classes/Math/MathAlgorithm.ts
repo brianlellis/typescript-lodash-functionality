@@ -22,8 +22,16 @@ export default class MathAlgorithm {
     this.isSymbol( value );
     if ( 'number' === typeof value )        return value;
     else if ( 'string' === typeof value )   return this.stringToNumber( value );
-    else if ( Array.isArray( value ) )      return arrayEval( value ); // https://jsben.ch/QgYAV
+    else if ( Array.isArray( value ) )      return this.chooseArrayEval( arrayEval , value ); // https://jsben.ch/QgYAV
     throw new Error( 'Cannot iterate objects at this time' );
+  }
+
+  chooseArrayEval( which: string , struct: any[] ): number {
+    if ( 'sum' === which ) return this.sumArray( struct );
+    else if ( 'diff' === which ) return this.diffArray( struct );
+    else if ( 'prod' === which ) return this.prodArray( struct );
+    else if ( 'quot' === which ) return this.quotArray( struct );
+    throw new Error( 'Undefined arrayEval choice sum|diff' );
   }
 
   sumArray( arr_value: any[] ): number {
@@ -38,13 +46,35 @@ export default class MathAlgorithm {
     return sum;
   }
 
+  prodArray( arr_value: any[] ): number {
+    let sum: number = this.evalValue( arr_value.shift() ) , idx = arr_value.length;
+    while(idx--) sum *= this.evalValue( arr_value[ idx ] );
+    return sum;
+  }
+
+  quotArray( arr_value: any[] ): number {
+    let sum: number = this.evalValue( arr_value.shift() ) , idx = arr_value.length;
+    while(idx--) sum /= this.evalValue( arr_value[ idx ] );
+    return sum;
+  }
+
   // TODO: Consider iteration of objects also but want fastest possible iteration method
   add( a: any , b: any ): number {
-    return this.evalValue( a , this.sumArray ) + this.evalValue( b , this.sumArray );
+    return this.evalValue( a , 'sum' ) + this.evalValue( b , 'sum' );
   }
 
   diff( a: any , b: any , absolute: boolean = false ): number {
-    const VAL = this.evalValue( a , this.diffArray ) - this.evalValue( b , this.diffArray );
+    const VAL = this.evalValue( a , 'diff' ) - this.evalValue( b , 'diff' );
+    return absolute ? Math.abs( VAL ) : VAL;
+  }
+
+  prod( a: any , b: any , absolute: boolean = false ): number {
+    const VAL = this.evalValue( a , 'prod' ) * this.evalValue( b , 'prod' );
+    return absolute ? Math.abs( VAL ) : VAL;
+  }
+
+  quot( a: any , b: any , absolute: boolean = false ): number {
+    const VAL = this.evalValue( a , 'quot' ) / this.evalValue( b , 'quot' );
     return absolute ? Math.abs( VAL ) : VAL;
   }
 }
