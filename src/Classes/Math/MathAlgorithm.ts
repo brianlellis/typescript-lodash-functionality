@@ -1,20 +1,23 @@
 export default class MathAlgorithm {
-  isUndefined( value ): void {
+  isUndefined( value: any ): void {
     if ( undefined === value ) throw new Error( 'Parameter cannot be undefined' );
   }
 
-  isSymbol( value ): void {
-    const type = typeof value
-    const IS_SYMBOL = type == 'symbol' || (type === 'object' && value != null && getTag(value) == '[object Symbol]')
+  isSymbol( value: any ): void {
+    if ( 'symbol' === typeof value ) throw new Error( 'Cannot use Symbol type in method' );
 
-    if ( IS_SYMBOL ) throw new Error( 'Cannot use Symbol type in method' );
+    // const type = typeof value
+    // if (
+    //   type === 'symbol' ||
+    //   type === 'object' && value !== null && getTag(value) === '[object Symbol]'
+    // ) throw new Error( 'Cannot use Symbol type in method' );
   }
 
   stringToNumber( value: string ): number {
     return +value; // console log infinite value if present from conversion
   }
 
-  evalValue( value , arrayEval ): number {
+  evalValue( value: any , arrayEval?: any ): number {
     this.isUndefined( value );
     this.isSymbol( value );
     if ( 'number' === typeof value )        return value;
@@ -23,24 +26,24 @@ export default class MathAlgorithm {
     throw new Error( 'Cannot iterate objects at this time' );
   }
 
-  sumArray( arr_value ): number {
+  sumArray( arr_value: any[] ): number {
     let idx = arr_value.length, sum: number = 0;
     while(idx--) sum += this.evalValue( arr_value[ idx ] );
     return sum;
   }
 
-  diffArray( arr_value ): number {
+  diffArray( arr_value: any[] ): number {
     let idx = arr_value.length, sum: number = 0;
     while(idx--) sum -= this.evalValue( arr_value[ idx ] );
     return sum;
   }
 
   // TODO: Consider iteration of objects also but want fastest possible iteration method
-  add( a , b ) {
+  add( a: any , b: any ): number {
     return this.evalValue( a , this.sumArray ) + this.evalValue( b , this.sumArray );
   }
 
-  diff( a , b , absolute?: boolean = false ) {
+  diff( a: any , b: any , absolute: boolean = false ): number {
     const VAL = this.evalValue( a , this.diffArray ) - this.evalValue( b , this.diffArray );
     return absolute ? Math.abs( VAL ) : VAL;
   }
