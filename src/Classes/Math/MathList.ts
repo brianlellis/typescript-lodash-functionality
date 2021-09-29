@@ -55,7 +55,7 @@ export default class MathList {
   // TODO: Needs additional method to return a sorted ascend/descend array of mode values
   mode( numbers: any ) {
     // as result can be bimodal or multi-modal, the returned result is provided as an array mode
-    // EXAMPLE: [3, 5, 4, 4, 1, 1, 2, 3] = [1, 3, 4]
+    // EXAMPLE: [ 3, 5, 4, 4, 1, 1, 2, 3 ] = [ 1, 3, 4 ]
     let idx: number = numbers.length,
       count: { [key: string]: number } = {},
       modes: number[] = [],
